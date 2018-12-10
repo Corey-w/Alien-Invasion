@@ -1,4 +1,6 @@
 import pygame.font
+from pygame.sprite import Group
+from ship import Ship
 
 class Score():
     """Reports scoring stats"""
@@ -16,6 +18,7 @@ class Score():
         self.prep_score()
         self.prep_high_score()
         self.prep_level()
+        self.prep_ships()
 
     def prep_score(self):
         """Display score as rendered image"""
@@ -42,7 +45,7 @@ class Score():
     def prep_level(self):
         """Render level as an image"""
         level = int(self.stats.level)
-        level_str = "Level: {:,}".format(level)
+        level_str = "Lvl: {:,}".format(level)
         self.level_image = self.font.render(str(level_str), True, self.text_color, self.ai_settings.bg_color)
 
         # Position level
@@ -50,9 +53,20 @@ class Score():
         self.level_rect.right = self.score_rect.right
         self.level_rect.top = self.score_rect.bottom + 10
 
+    def prep_ships(self):
+        """Shows number of ships left in game"""
+        self.ships = Group()
+        for ship_number in range(self.stats.ships_lives):
+            ship = Ship(self.ai_settings, self.screen)
+            ship.rect.x = 10 + ship_number * ship.rect.width
+            ship.rect.y = 10
+            self.ships.add(ship)
+
     def display_score(self):
             """Draw score on screen"""
             self.screen.blit(self.score_image, self.score_rect)
             self.screen.blit(self.high_score_image, self.high_score_rect)
             self.screen.blit(self.level_image, self.level_rect)
+            # Draw Ship Lives
+            self.ships.draw(self.screen)
 

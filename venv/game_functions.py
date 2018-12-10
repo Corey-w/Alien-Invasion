@@ -31,6 +31,7 @@ def start_game(ai_settings, screen, stats, score_board, ship, aliens, bullets):
         score_board.prep_score()
         score_board.prep_high_score() # TODO make changes to save high scores
         score_board.prep_level()
+        score_board.prep_ships()
 
         # Empty Groups
         aliens.empty()
@@ -142,11 +143,14 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, score_board, ship,
         create_fleet(ai_settings, screen, ship, aliens)
 
 
-def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
+def ship_hit(ai_settings, stats, score_board, screen, ship, aliens, bullets):
     """Responds to ship being hit by aliens"""
     if stats.ships_lives > 0:
         # remove 1 life from ship_lives
         stats.ships_lives -= 1
+
+        # Update ship lives
+        score_board.prep_ships()
 
         # Empty the list of aliens and bullets
         aliens.empty()
@@ -163,13 +167,13 @@ def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
         stats.game_active = False
         pygame.mouse.set_visible(True)
 
-def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
+def check_aliens_bottom(ai_settings, stats, score_board, screen, ship, aliens, bullets):
     """Check if aliens have reached the bottom of the screen"""
     screen_rect = screen.get_rect()
     for alien in aliens.sprites():
         # Treats alien reaching bottom as if ship was hit
         if alien.rect.bottom >= screen_rect.bottom:
-            ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+            ship_hit(ai_settings, stats, score_board, screen, ship, aliens, bullets)
 
 def check_high_scores(stats, score_board):
     """Check for existing highscores"""
@@ -178,19 +182,19 @@ def check_high_scores(stats, score_board):
         score_board.prep_high_score()
 
 
-def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
+def update_aliens(ai_settings, stats, score_board, screen, ship, aliens, bullets):
     """Check if fleet at an edge; update positions of aliens within fleet """
     check_fleet_edges(ai_settings, aliens)
     aliens.update()
 
     # Look for collisions between ship and aliens
     if pygame.sprite.spritecollideany(ship, aliens):
-        ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+        ship_hit(ai_settings, stats, score_board, screen, ship, aliens, bullets)
         # Used for debugging
         #print("Ship Has Been Hit!!!")
 
     # Check if any aliens made it to the bottom!
-    check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets)
+    check_aliens_bottom(ai_settings, stats, screen, score_board, ship, aliens, bullets)
 
 def get_number_of_aliens_x(ai_settings, alien_width):
     """Work out number of aliens per row"""
