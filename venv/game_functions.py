@@ -194,7 +194,7 @@ def update_aliens(ai_settings, stats, score_board, screen, ship, aliens, bullets
         #print("Ship Has Been Hit!!!")
 
     # Check if any aliens made it to the bottom!
-    check_aliens_bottom(ai_settings, stats, screen, score_board, ship, aliens, bullets)
+    check_aliens_bottom(ai_settings, stats, score_board, screen, ship, aliens, bullets)
 
 def get_number_of_aliens_x(ai_settings, alien_width):
     """Work out number of aliens per row"""
